@@ -3,7 +3,7 @@ import paramiko as pk
 import getpass as gp
 import time
 
-def OpenCommand(host,user,password):
+def OpenCommand(client,host,user,password):
     
         client = pk.SSHClient()
         client.set_missing_host_key_policy(pk.AutoAddPolicy())
@@ -57,7 +57,20 @@ def StartConnect():
                 host = values['Host']
                 user = values['User']
                 password = values['Password']
-                OpenCommand(host,user,password)
+                
+                err=''
+                
+                try:
+                    client = pk.SSHClient()
+                    client.set_missing_host_key_policy(pk.AutoAddPolicy())
+                    client.connect(hostname=host, username=user,password=password)
+                except Exception as err:
+                    windowConnect['Err'].update(err)
+
+               
+                if err == '':
+                    OpenCommand(client,host,user,password)
+               
 
 
 StartConnect()
