@@ -29,8 +29,12 @@ def OpenCommand(host,user,password):
                 cmd_out=stdout.read()
                 windowCommand['Output'].update(cmd_out)
             elif event == 'Disconnect':
+                client.close()
                 windowCommand['Status'].update('Status: Offline')
             elif event == 'Reconnect':
+                client = pk.SSHClient()
+                client.set_missing_host_key_policy(pk.AutoAddPolicy())
+                client.connect(hostname=host, username=user,password=password)
                 windowCommand['Status'].update('Status: Online')
         
 def StartConnect():
