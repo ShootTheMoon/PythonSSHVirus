@@ -4,11 +4,6 @@ import getpass as gp
 import time
 
 def OpenCommand(client,host,user,password):
-    
-        client = pk.SSHClient()
-        client.set_missing_host_key_policy(pk.AutoAddPolicy())
-        client.connect(hostname=host, username=user,password=password)
-    
         layout1 = [
         [sg.InputText('Command',key='Command',size=(75,45)),sg.Button('Run',)],
         [sg.Multiline('',key='Output',size=(90,30),disabled=True)],
@@ -43,7 +38,7 @@ def StartConnect():
         [sg.InputText('User',key='User')],
         [sg.InputText('Password',key='Password')],
         [sg.Button('Connect',),sg.Button('Exit')],
-        [sg.Text('',key='Err')],
+        [sg.Text('',key='Err',text_color= 'red')],
     ]
 
     windowConnect = sg.Window('Connect',layout=layout,size=(260,150),element_justification='c')
@@ -59,19 +54,15 @@ def StartConnect():
                 user = values['User']
                 password = values['Password']
                 
-                err=''
-                
                 try:
                     client = pk.SSHClient()
                     client.set_missing_host_key_policy(pk.AutoAddPolicy())
                     client.connect(hostname=host, username=user,password=password)
                 except Exception as err:
                     windowConnect['Err'].update(err)
-
-               
-                if err == '':
+                else:
                     OpenCommand(client,host,user,password)
-               
+                    
 
 
 StartConnect()
