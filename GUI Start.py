@@ -43,6 +43,7 @@ def StartConnect():
         [sg.InputText('User',key='User')],
         [sg.InputText('Password',key='Password')],
         [sg.Button('Connect',),sg.Button('Exit')],
+        [sg.Text('',key='Err')],
     ]
 
     windowConnect = sg.Window('Connect',layout=layout,size=(260,130),element_justification='c')
