@@ -1,9 +1,17 @@
 import PySimpleGUI as sg
+import paramiko as pk
+import getpass as gp
+import time
 
-def OpenCommand():
+def OpenCommand(host,user,password):
+    
+        client = pk.SSHClient()
+        client.set_missing_host_key_policy(pk.AutoAddPolicy())
+        client.connect(hostname=host, username=user,password=password)
+    
         layout1 = [
         [sg.InputText('Command',key='Command',size=(75,45)),sg.Button('Run',)],
-        [sg.Multiline('Output',key='Output',size=(90,30),disabled=True)],
+        [sg.Multiline('',key='Output',size=(90,30),disabled=True)],
         [sg.Text('Status: Online',key='Status')],
         [sg.Button('Reconnect',),sg.Button('Disconnect',)],
         ]
@@ -13,7 +21,13 @@ def OpenCommand():
         while True:
             event, values =windowCommand.read()
             if event == sg.WIN_CLOSED:
+                client.close()
                 break
+            elif event == 'Run':
+                command= values['Command']
+                (stdin,stdout,stderr) =client.exec_command(command)
+                cmd_out=stdout.read()
+                windowCommand['Output'].update(cmd_out)
             elif event == 'Disconnect':
                 windowCommand['Status'].update('Status: Offline')
             elif event == 'Reconnect':
@@ -21,7 +35,7 @@ def OpenCommand():
         
 def StartConnect():
     layout = [
-        [sg.InputText('IP',key='ip')],
+        [sg.InputText('Host',key='Host')],
         [sg.InputText('User',key='User')],
         [sg.InputText('Password',key='Password')],
         [sg.Button('Connect',),sg.Button('Exit')],
@@ -36,7 +50,10 @@ def StartConnect():
         elif event == 'Exit':
             break
         elif event=='Connect':
-                OpenCommand()
+                host = values['Host']
+                user = values['User']
+                password = values['Password']
+                OpenCommand(host,user,password)
 
 
 StartConnect()
