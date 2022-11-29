@@ -46,7 +46,7 @@ def StartConnect():
         [sg.Text('',key='Err')],
     ]
 
-    windowConnect = sg.Window('Connect',layout=layout,size=(260,130),element_justification='c')
+    windowConnect = sg.Window('Connect',layout=layout,size=(260,150),element_justification='c')
 
     while True:
         event, values =windowConnect.read()
